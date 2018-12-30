@@ -1,0 +1,50 @@
+version: 2
+jobs:
+  build_executable:
+    docker:
+      - image: node:10-alpine 
+    steps:
+      - run: apk add git openssh-client
+      - checkout
+      # (from: https://discuss.circleci.com/t/can-not-get-submodules-to-clone-properly/22120/2)
+      - run:
+          name: "Pull Submodules"
+          command: |
+            git submodule init
+            git submodule update --remote
+      - run: npm install
+      - run: npm run build
+      - persist_to_workspace:
+          root: /root/project/dist
+          paths:
+            - .
+
+  github_release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: /root/project/dist
+      # (from: https://circleci.com/blog/publishing-to-github-releases-via-circleci/)
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            VERSION=$CIRCLE_TAG
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /root/project/dist/
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_executable:
+          filters:
+            tags:
+              only: /.*/
+      - github_release:
+          requires:
+            - build_executable
+          filters:
+            tags:
+              only: /.+/
+            branches:
+              ignore: /.*/
