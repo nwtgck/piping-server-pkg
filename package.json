@@ -1,0 +1,14 @@
+{
+  "name": "piping-server-pkg",
+  "version": "0.1.0-SNAPSHOT",
+  "description": "Piping server in single binary (Experimental)",
+  "scripts": {
+    "build": "cd piping-server && npm i && npm run build && cd .. && pkg --out-path=dist piping-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryo Ota <nwtgck@gmail.com> (https://github.com/nwtgck)",
+  "license": "MIT",
+  "devDependencies": {
+    "pkg": "^4.3.5"
+  }
+}

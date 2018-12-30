@@ -1,0 +1,3 @@
+[submodule "piping-server"]
+	path = piping-server
+	url = https://github.com/nwtgck/piping-server.git
