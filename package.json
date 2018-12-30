@@ -3,7 +3,8 @@
   "version": "0.1.0-SNAPSHOT",
   "description": "Piping server in single binary (Experimental)",
   "scripts": {
-    "build": "cd piping-server && npm i && npm run build && cd .. && pkg --out-path=dist piping-server",
+    "piping-build": "cd piping-server && npm i && npm run build",
+    "build": "npm run piping-build && pkg --out-path=dist --targets=node10-mac-x64,node10-linux-x64,node10-win-x64 piping-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ryo Ota <nwtgck@gmail.com> (https://github.com/nwtgck)",
