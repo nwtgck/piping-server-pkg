@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build_executable:
+    docker:
+      - image: node:10-alpine 
+    steps:
+      - run: apk add git
+      - checkout
+      # (from: https://discuss.circleci.com/t/can-not-get-submodules-to-clone-properly/22120/2)
+      - run:
+          name: "Pull Submodules"
+          command: |
+            git submodule init
+            git submodule update --remote
+      - run: npm install
+      - run: npm run build
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_executable
