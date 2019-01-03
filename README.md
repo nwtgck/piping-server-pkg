@@ -5,7 +5,8 @@
 
 ## Download executables
 
-Portable executables are located at <https://github.com/nwtgck/piping-server-pkg/releases>.
+Portable executables are located at <https://github.com/nwtgck/piping-server-pkg/releases>.  
+These releases are automatically published by CircleCI.
 
 ## Generate executables in local
 
