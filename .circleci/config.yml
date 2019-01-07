@@ -2,7 +2,7 @@ version: 2
 jobs:
   build_executable:
     docker:
-      - image: node:10-alpine 
+      - image: node:10-alpine
     steps:
       - run: apk add git openssh-client
       - checkout
