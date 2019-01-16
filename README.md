@@ -2,11 +2,18 @@
 [![CircleCI](https://circleci.com/gh/nwtgck/piping-server-pkg.svg?style=shield)](https://circleci.com/gh/nwtgck/piping-server-pkg)
 
 [Piping server](https://github.com/nwtgck/piping-server) into an portable executable  
-NOTE: This project may be merged into [piping-server](https://github.com/nwtgck/piping-server)
+(NOTE: This project may be merged into [piping-server](https://github.com/nwtgck/piping-server))
 
-## Download executables
+## Download & Run
 
-Portable executables are located at <https://github.com/nwtgck/piping-server-pkg/releases>.  
+```
+wget https://github.com/nwtgck/piping-server-pkg/releases/download/v0.7.0/piping-server-macos
+chmod +x piping-server-macos
+./piping-server-macos
+```
+
+Then, a server is running on <http://localhost:8080>.  
+Other portable executables are found in [GitHub Releases](https://github.com/nwtgck/piping-server-pkg/releases).  
 
 ## Automation
 
