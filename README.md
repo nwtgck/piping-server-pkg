@@ -1,7 +1,7 @@
 # piping-server-pkg
 [![CircleCI](https://circleci.com/gh/nwtgck/piping-server-pkg.svg?style=shield)](https://circleci.com/gh/nwtgck/piping-server-pkg)
 
-[Piping server](https://github.com/nwtgck/piping-server) into an portable executable  
+[Piping server](https://github.com/nwtgck/piping-server) into an portable executable by [zeit/pkg](https://github.com/zeit/pkg)  
 (NOTE: This project may be merged into [piping-server](https://github.com/nwtgck/piping-server))
 
 ## Download & Run
