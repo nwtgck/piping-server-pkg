@@ -14,6 +14,9 @@ jobs:
             git submodule update --remote
       - run: npm install
       - run: npm run build
+      - run:
+          name: Generate SHA256
+          command: sha256sum dist/piping-server* | tee dist/piping-server-sha256.txt
       - persist_to_workspace:
           root: /root/project/dist
           paths:
