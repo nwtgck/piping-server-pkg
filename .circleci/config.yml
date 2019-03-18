@@ -18,7 +18,41 @@ jobs:
           root: /root/project/dist
           paths:
             - .
+  
+  working_test:
+    docker:
+      - image: ubuntu:16.04
+    steps:
+      - run: apt update && apt install -y curl
+      - attach_workspace:
+          at: /root/project/dist
+      - run:
+          name: Working test
+          command: |
+            set -x
+            # Run a server in background
+            /root/project/dist/piping-server-linux --http-port=80 &> /var/log/piping-server.log &
+            # Get server PID
+            server_pid=$!
+            # Wait for server running
+            sleep 1
+            # Create a file to send
+            echo 'hello, world' > /tmp/hello.txt
+            # Send and wait for a reciever
+            curl -T /tmp/hello.txt localhost/mypath &
+            # Get data as a file
+            curl localhost/mypath > /tmp/download.txt
+            # Print downloaded file
+            cat  /tmp/download.txt
+            # Test the equality
+            diff /tmp/hello.txt /tmp/download.txt
 
+            # Print server's log
+            cat /var/log/piping-server.log
+
+            # Stop the server
+            kill -9 $server_pid
+          
   github_release:
     docker:
       - image: cibuilds/github:0.10
@@ -40,9 +74,15 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - github_release:
+      - working_test:
           requires:
             - build_executable
+          filters:
+            tags:
+              only: /.*/
+      - github_release:
+          requires:
+            - working_test
           filters:
             tags:
               only: /.+/
