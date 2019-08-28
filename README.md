@@ -7,13 +7,13 @@
 ## Download & Run
 
 ```
-wget https://github.com/nwtgck/piping-server-pkg/releases/download/v0.8.9/piping-server-macos
-chmod +x piping-server-macos
-./piping-server-macos --http-port=8888
+wget https://github.com/nwtgck/piping-server-pkg/releases/download/v0.14.0/piping-server-linux
+chmod +x piping-server-linux
+./piping-server-linux --http-port=8888
 ```
 
-Then, a server is running on <http://localhost:8888>.  
-Other portable executables are found in [GitHub Releases](https://github.com/nwtgck/piping-server-pkg/releases).  
+Then, a server is running on <http://localhost:8888> in Linux.  
+Other portable executables including Linux/macOS/Windows are found in [GitHub Releases](https://github.com/nwtgck/piping-server-pkg/releases).  
 
 ## Automation
 
