@@ -23,5 +23,6 @@ These releases are automatically published by CircleCI.
 
 ```bash
 cd <this repo>
+npm ci
 npm run build
 ```
