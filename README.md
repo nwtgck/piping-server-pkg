@@ -7,7 +7,7 @@
 ## Download & Run
 
 ```
-wget https://github.com/nwtgck/piping-server-pkg/releases/download/v1.1.0/piping-server-linux
+wget https://github.com/nwtgck/piping-server-pkg/releases/download/v1.2.1/piping-server-linux
 chmod +x piping-server-linux
 ./piping-server-linux --http-port=8888
 ```
