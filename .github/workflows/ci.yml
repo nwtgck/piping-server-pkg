@@ -56,3 +56,39 @@ jobs:
 
         # Stop the server
         kill $server_pid
+
+  macos_operational_test:
+    runs-on: macos-10.15
+    needs: build_executable
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: x64_build
+        path: .
+    - name: Unarchive dist.tar
+      run: tar xvf dist.tar
+    - name: Operational test
+      run: |
+        set -xeu
+        # Run a server in background
+        ./dist/piping-server-macos --http-port=8080 &> ./piping-server.log &
+        # Get server PID
+        server_pid=$!
+        # Wait for server running
+        sleep 1
+        # Create a file to send
+        echo 'hello, world' > /tmp/hello.txt
+        # Send and wait for a receiver
+        curl -T /tmp/hello.txt localhost:8080/mypath &
+        # Get data as a file
+        curl localhost:8080/mypath > /tmp/download.txt
+        # Print downloaded file
+        cat  /tmp/download.txt
+        # Test the equality
+        diff /tmp/hello.txt /tmp/download.txt
+
+        # Print server's log
+        cat ./piping-server.log
+
+        # Stop the server
+        kill $server_pid
