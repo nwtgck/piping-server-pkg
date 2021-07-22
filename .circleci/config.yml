@@ -2,7 +2,7 @@ version: 2
 jobs:
   build_executable:
     docker:
-      - image: node:10
+      - image: node:14
     steps:
       - checkout
       # (from: https://discuss.circleci.com/t/can-not-get-submodules-to-clone-properly/22120/2)

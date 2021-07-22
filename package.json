@@ -4,10 +4,10 @@
   "description": "Piping Server in single binary (Experimental)",
   "scripts": {
     "piping-build": "cd piping-server && npm ci && npm run build",
-    "build": "npm run piping-build && pkg --out-path=dist --targets=node10-mac-x64,node10-linux-x64,node10-alpine-x64,node10-win-x64 piping-server",
+    "build": "npm run piping-build && pkg --out-path=dist --targets=node14-mac-x64,node14-linux-x64,node14-alpine-x64,node14-win-x64 piping-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Ryo Ota <nwtgck@gmail.com> (https://github.com/nwtgck)",
+  "author": "Ryo Ota <nwtgck@nwtgck.org> (https://github.com/nwtgck)",
   "license": "MIT",
   "devDependencies": {
     "pkg": "^5.3.1"
