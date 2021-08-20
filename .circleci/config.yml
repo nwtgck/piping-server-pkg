@@ -55,18 +55,18 @@ jobs:
             # Stop the server
             kill -9 $server_pid
           
-  github_release:
-    docker:
-      - image: cibuilds/github:0.10
-    steps:
-      - attach_workspace:
-          at: /root/project/dist
-      # (from: https://circleci.com/blog/publishing-to-github-releases-via-circleci/)
-      - run:
-          name: "Publish Release on GitHub"
-          command: |
-            VERSION=$CIRCLE_TAG
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /root/project/dist/
+#  github_release:
+#    docker:
+#      - image: cibuilds/github:0.10
+#    steps:
+#      - attach_workspace:
+#          at: /root/project/dist
+#      # (from: https://circleci.com/blog/publishing-to-github-releases-via-circleci/)
+#      - run:
+#          name: "Publish Release on GitHub"
+#          command: |
+#            VERSION=$CIRCLE_TAG
+#            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /root/project/dist/
 
 workflows:
   version: 2
@@ -82,11 +82,11 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - github_release:
-          requires:
-            - working_test
-          filters:
-            tags:
-              only: /.+/
-            branches:
-              ignore: /.*/
+#      - github_release:
+#          requires:
+#            - working_test
+#          filters:
+#            tags:
+#              only: /.+/
+#            branches:
+#              ignore: /.*/
