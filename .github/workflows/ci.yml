@@ -175,3 +175,26 @@ jobs:
 
         # Stop the server
         kill $server_pid
+
+  release_executables:
+    if: startsWith( github.ref, 'refs/tags/')
+    needs:
+      - linux_operational_test
+      - alpine_operational_test
+      - macos_operational_test
+      - windows_operational_test
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: x64_build
+          path: .
+      - name: Unarchive dist.tar
+        run: tar xvf dist.tar
+      - run: |
+          set -xeu
+          TAG=$(echo $GITHUB_REF | cut -d / -f 3)
+          VERSION=$TAG
+          REPO=$(echo $GITHUB_REPOSITORY | cut -d / -f 2)
+          curl -L https://github.com/tcnksm/ghr/releases/download/v0.14.0/ghr_v0.14.0_linux_amd64.tar.gz | tar xzf -
+          ./ghr_v0.14.0_linux_amd64/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${GITHUB_ACTOR} -r ${REPO} -c ${GITHUB_SHA} -delete ${VERSION} ./dist
