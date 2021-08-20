@@ -1,5 +1,5 @@
 # piping-server-pkg
-[![CI](https://github.com/nwtgck/piping-server-pkg/actions/workflows/ci.yml/badge.svg)](https://github.com/nwtgck/piping-server-pkg/actions/workflows/ci.yml) [![CircleCI](https://circleci.com/gh/nwtgck/piping-server-pkg.svg?style=shield)](https://circleci.com/gh/nwtgck/piping-server-pkg)
+[![CI](https://github.com/nwtgck/piping-server-pkg/actions/workflows/ci.yml/badge.svg)](https://github.com/nwtgck/piping-server-pkg/actions/workflows/ci.yml)
 
 [Piping Server](https://github.com/nwtgck/piping-server) into an portable executable by [vercel/pkg](https://github.com/vercel/pkg) for macOS, Linux and Windows  
 (NOTE: This project may be merged into [piping-server](https://github.com/nwtgck/piping-server))
