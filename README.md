@@ -33,6 +33,8 @@ iwr https://github.com/nwtgck/piping-server-pkg/releases/download/v1.3.0/piping-
 .\piping-server-win.exe --http-port=8888
 ```
 
+or download from <https://github.com/nwtgck/piping-server-pkg/releases/download/v1.3.0/piping-server-win.exe>.
+
 ## Run on Alpine
 
 Run the command below, and a server runs on <http://localhost:8888>.
