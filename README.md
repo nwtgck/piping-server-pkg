@@ -2,7 +2,6 @@
 [![CI](https://github.com/nwtgck/piping-server-pkg/actions/workflows/ci.yml/badge.svg)](https://github.com/nwtgck/piping-server-pkg/actions/workflows/ci.yml)
 
 [Piping Server](https://github.com/nwtgck/piping-server) into an portable executable by [vercel/pkg](https://github.com/vercel/pkg) for macOS, Linux and Windows  
-(NOTE: This project may be merged into [piping-server](https://github.com/nwtgck/piping-server))
 
 ## Run on Linux
 
