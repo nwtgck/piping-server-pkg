@@ -8,7 +8,7 @@
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
-curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.4.0/piping-server-linux
+curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.5.0/piping-server-linux
 chmod +x piping-server-linux
 ./piping-server-linux --http-port=8888
 ```
@@ -18,7 +18,7 @@ chmod +x piping-server-linux
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
-curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.4.0/piping-server-macos
+curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.5.0/piping-server-macos
 chmod +x piping-server-macos
 ./piping-server-macos --http-port=8888
 ```
@@ -28,18 +28,18 @@ chmod +x piping-server-macos
 Run the command below in PowerShell, and a server runs on <http://localhost:8888>.
 
 ```ps1
-iwr https://github.com/nwtgck/piping-server-pkg/releases/download/v1.4.0/piping-server-win.exe -OutFile piping-server-win.exe
+iwr https://github.com/nwtgck/piping-server-pkg/releases/download/v1.5.0/piping-server-win.exe -OutFile piping-server-win.exe
 .\piping-server-win.exe --http-port=8888
 ```
 
-or download from <https://github.com/nwtgck/piping-server-pkg/releases/download/v1.4.0/piping-server-win.exe>.
+or download from <https://github.com/nwtgck/piping-server-pkg/releases/download/v1.5.0/piping-server-win.exe>.
 
 ## Run on Alpine
 
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
-curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.4.0/piping-server-alpine
+curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.5.0/piping-server-alpine
 chmod +x piping-server-alpine
 ./piping-server-alpine --http-port=8888
 ```
