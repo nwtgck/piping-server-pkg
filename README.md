@@ -46,7 +46,7 @@ chmod +x piping-server-alpine
 
 ## Automation
 
-These releases are automatically published by CircleCI.
+These releases are automatically published by GitHub Actions.
 
 ## Generate executables in local
 
