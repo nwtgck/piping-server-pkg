@@ -15,7 +15,7 @@ jobs:
     - run: npm ci
     - run: npm run build-x64
     - name: Tar for preserving executable permissions
-      run: tar cvf dist.tar ./dist/
+      run: tar cvf dist_x64.tar ./dist/
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
@@ -215,6 +215,8 @@ jobs:
         with:
           name: build_x64
           path: .
+      - name: Unarchive dist_x64.tar
+        run: tar xvf dist_x64.tar
       - uses: actions/download-artifact@v2
         with:
           name: build_arm64
