@@ -28,6 +28,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
     - run: |
         set -xeu
         docker run --rm -v $PWD:/app arm32v7/node ls
