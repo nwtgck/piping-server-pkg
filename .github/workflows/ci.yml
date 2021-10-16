@@ -22,7 +22,8 @@ jobs:
         path: dist.tar
 
   build_arm_executables:
-    runs-on: ubuntu-18.04
+    # NOTE: "ubuntu-18.04" causes an error, "standard_init_linux.go:228: exec user process caused: exec format error"
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
       with:
