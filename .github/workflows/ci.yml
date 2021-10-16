@@ -13,12 +13,12 @@ jobs:
       with:
         node-version: '14'
     - run: npm ci
-    - run: npm run build
+    - run: npm run build-x64
     - name: Tar for preserving executable permissions
       run: tar cvf dist.tar ./dist/
     - uses: actions/upload-artifact@v2
       with:
-        name: x64_build
+        name: build_x64
         path: dist.tar
 
   linux_operational_test:
@@ -27,7 +27,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v2
       with:
-        name: x64_build
+        name: build_x64
         path: .
     - name: Unarchive dist.tar
       run: tar xvf dist.tar
@@ -35,7 +35,7 @@ jobs:
       run: |
         set -xeu
         # Run a server in background
-        ./dist/piping-server-linux --http-port=8080 &> ./piping-server.log &
+        ./dist/piping-server-linux-x64 --http-port=8080 &> ./piping-server.log &
         # Get server PID
         server_pid=$!
         # Wait for server running
@@ -63,7 +63,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v2
       with:
-        name: x64_build
+        name: build_x64
         path: .
     - name: Unarchive dist.tar
       run: tar xvf dist.tar
@@ -74,7 +74,7 @@ jobs:
         apk add curl
 
         # Run a server in background
-        ./dist/piping-server-alpine --http-port=8080 &> ./piping-server.log &
+        ./dist/piping-server-alpine-x64 --http-port=8080 &> ./piping-server.log &
         # Wait for server running
         sleep 1
         # Create a file to send
@@ -98,7 +98,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v2
       with:
-        name: x64_build
+        name: build_x64
         path: .
     - name: Unarchive dist.tar
       run: tar xvf dist.tar
@@ -106,7 +106,7 @@ jobs:
       run: |
         set -xeu
         # Run a server in background
-        ./dist/piping-server-macos --http-port=8080 &> ./piping-server.log &
+        ./dist/piping-server-macos-x64 --http-port=8080 &> ./piping-server.log &
         # Get server PID
         server_pid=$!
         # Wait for server running
@@ -134,7 +134,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v2
       with:
-        name: x64_build
+        name: build_x64
         path: .
     - name: Unarchive dist.tar
       run: tar xvf dist.tar
@@ -149,7 +149,7 @@ jobs:
       run: |
         # Run a server in background
         $args = @("--http-port=8080", "--enable-https", "--https-port=8443", "--key-path=.\ssl_certs\server.key", "--crt-path=.\ssl_certs\server.crt")
-        $server_pid = Start-Process -PassThru -FilePath .\dist\piping-server-win.exe -ArgumentList $args | foreach { $_.Id }
+        $server_pid = Start-Process -PassThru -FilePath .\dist\piping-server-win-x64.exe -ArgumentList $args | foreach { $_.Id }
         # Wait for server running
         sleep 1
         # Create a file to send
@@ -187,7 +187,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: x64_build
+          name: build_x64
           path: .
       - name: Unarchive dist.tar
         run: tar xvf dist.tar
