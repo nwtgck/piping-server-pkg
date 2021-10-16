@@ -28,15 +28,15 @@ jobs:
       with:
         submodules: true
     - run: |
-      set -xeu
-      docker run --rm -i -v $PWD:/app arm64v8/node:14 bash << EOF
-      set -xeu
-      cd /app
-      npm ci
-      npm run piping-build
-      ./node_modules/.bin/pkg --out-path=dist --targets=node14-linux-arm64,node14-mac-arm64,node14-alpine-arm64,node14-win-arm64 piping-server
-      EOF
-      ls dist
+        set -xeu
+        docker run --rm -i -v $PWD:/app arm64v8/node:14 bash << EOF
+        set -xeu
+        cd /app
+        npm ci
+        npm run piping-build
+        ./node_modules/.bin/pkg --out-path=dist --targets=node14-linux-arm64,node14-mac-arm64,node14-alpine-arm64,node14-win-arm64 piping-server
+        EOF
+        ls dist
     - name: Tar for preserving executable permissions
       run: tar cvf dist.tar ./dist/
     - uses: actions/upload-artifact@v2
