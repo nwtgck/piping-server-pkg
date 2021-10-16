@@ -53,5 +53,11 @@ These releases are automatically published by GitHub Actions.
 ```bash
 cd <this repo>
 npm ci
-npm run build
+npm run build-x64
+```
+
+```bash
+cd <this repo>
+npm ci
+npm run build-arm64
 ```
