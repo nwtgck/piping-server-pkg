@@ -3,7 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build_executable:
+  build_x64_executables:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
@@ -15,22 +15,45 @@ jobs:
     - run: npm ci
     - run: npm run build-x64
     - name: Tar for preserving executable permissions
-      run: tar cvf dist.tar ./dist/
+      run: tar cvf dist_x64.tar ./dist/
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path: dist.tar
+        path: dist_x64.tar
+
+  build_arm64_executables:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - run: |
+        set -xeu
+        docker run --rm -i -v $PWD:/app arm32v7/node:14 bash << EOF
+        set -xeu
+        cd /app
+        npm ci
+        npm run build-arm64
+        EOF
+    - name: Tar for preserving executable permissions
+      run: tar cvf dist_arm64.tar ./dist/
+    - uses: actions/upload-artifact@v2
+      with:
+        name: build_arm64
+        path: dist_arm64.tar
 
   linux_operational_test:
     runs-on: ubuntu-18.04
-    needs: build_executable
+    needs: build_x64_executables
     steps:
     - uses: actions/download-artifact@v2
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Operational test
       run: |
         set -xeu
@@ -59,14 +82,14 @@ jobs:
 
   alpine_operational_test:
     runs-on: ubuntu-18.04
-    needs: build_executable
+    needs: build_x64_executables
     steps:
     - uses: actions/download-artifact@v2
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Operational test
       run: |
         docker run --rm -i -v $PWD/dist:/dist alpine:3.14 /bin/sh << EOF
@@ -94,14 +117,14 @@ jobs:
 
   macos_operational_test:
     runs-on: macos-10.15
-    needs: build_executable
+    needs: build_x64_executables
     steps:
     - uses: actions/download-artifact@v2
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Operational test
       run: |
         set -xeu
@@ -130,14 +153,14 @@ jobs:
 
   windows_operational_test:
     runs-on: windows-2019
-    needs: build_executable
+    needs: build_x64_executables
     steps:
     - uses: actions/download-artifact@v2
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Create certificates
       run: |
         mkdir ssl_certs
@@ -183,14 +206,21 @@ jobs:
       - alpine_operational_test
       - macos_operational_test
       - windows_operational_test
+      - build_arm64_executables
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/download-artifact@v2
         with:
           name: build_x64
           path: .
-      - name: Unarchive dist.tar
-        run: tar xvf dist.tar
+      - name: Unarchive dist_x64.tar
+        run: tar xvf dist_x64.tar
+      - uses: actions/download-artifact@v2
+        with:
+          name: build_arm64
+          path: .
+      - name: Unarchive dist_arm64.tar
+        run: tar xvf dist_arm64.tar
       - run: |
           set -xeu
           TAG=$(echo $GITHUB_REF | cut -d / -f 3)
