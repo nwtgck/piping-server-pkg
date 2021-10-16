@@ -19,7 +19,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path: dist.tar
+        path: dist_x64.tar
 
   build_arm64_executables:
     runs-on: ubuntu-18.04
@@ -40,11 +40,11 @@ jobs:
         EOF
         ls dist
     - name: Tar for preserving executable permissions
-      run: tar cvf dist.tar ./dist/
+      run: tar cvf dist_arm64.tar ./dist/
     - uses: actions/upload-artifact@v2
       with:
         name: build_arm64
-        path: dist.tar
+        path: dist_arm64.tar
 
   linux_operational_test:
     runs-on: ubuntu-18.04
@@ -54,8 +54,8 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Operational test
       run: |
         set -xeu
@@ -90,8 +90,8 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Operational test
       run: |
         docker run --rm -i -v $PWD/dist:/dist alpine:3.14 /bin/sh << EOF
@@ -125,8 +125,8 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Operational test
       run: |
         set -xeu
@@ -161,8 +161,8 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist.tar
-      run: tar xvf dist.tar
+    - name: Unarchive dist_x64.tar
+      run: tar xvf dist_x64.tar
     - name: Create certificates
       run: |
         mkdir ssl_certs
@@ -214,8 +214,12 @@ jobs:
         with:
           name: build_x64
           path: .
-      - name: Unarchive dist.tar
-        run: tar xvf dist.tar
+      - uses: actions/download-artifact@v2
+        with:
+          name: build_arm64
+          path: .
+      - name: Unarchive dist_arm64.tar
+        run: tar xvf dist_arm64.tar
       - run: |
           set -xeu
           TAG=$(echo $GITHUB_REF | cut -d / -f 3)
