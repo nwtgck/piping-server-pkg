@@ -208,6 +208,7 @@ jobs:
       - alpine_operational_test
       - macos_operational_test
       - windows_operational_test
+      - build_arm64_executables
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/download-artifact@v2
