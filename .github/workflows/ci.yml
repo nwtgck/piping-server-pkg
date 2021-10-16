@@ -21,8 +21,7 @@ jobs:
         name: build_x64
         path: dist.tar
 
-  build_arm_executables:
-    # NOTE: "ubuntu-18.04" causes an error, "standard_init_linux.go:228: exec user process caused: exec format error"
+  build_arm64_executables:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
@@ -32,7 +31,14 @@ jobs:
       uses: docker/setup-qemu-action@v1
     - run: |
         set -xeu
-        docker run --rm -v $PWD:/app arm32v7/node ls
+        docker run --rm -v $PWD:/app arm64v8/node:14 << EOF
+        set -xeu
+        cd /app
+        npm ci
+        npm run piping-build
+        ./node_modules/.bin/pkg --out-path=dist --targets=node14-linux-arm64,node14-mac-arm64,node14-alpine-arm64,node14-win-arm64 piping-server
+        EOF
+        ls dist
     - name: Tar for preserving executable permissions
       run: tar cvf dist.tar ./dist/
     - uses: actions/upload-artifact@v2
