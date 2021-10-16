@@ -31,7 +31,7 @@ jobs:
       uses: docker/setup-qemu-action@v1
     - run: |
         set -xeu
-        docker run --rm -v $PWD:/app arm64v8/node:14 << EOF
+        docker run --rm -v $PWD:/app arm64v8/node:14 bash << EOF
         set -xeu
         cd /app
         npm ci
