@@ -30,7 +30,7 @@ jobs:
         submodules: true
     - run: |
         set -xeu
-        docker run --rm -v $PWD:/app node:14 ls
+        docker run --rm -v $PWD:/app arm64v8/ubuntu:20.04 ls
     - name: Tar for preserving executable permissions
       run: tar cvf dist.tar ./dist/
     - uses: actions/upload-artifact@v2
