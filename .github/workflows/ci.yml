@@ -257,6 +257,8 @@ jobs:
           set -xeu
           mkdir ./publish_dir
           mv piping-server-pkg-* ./publish_dir
+          # Show and create checksums
+          (cd publish_dir && sha256sum * | tee /dev/stderr > sha256sums.txt)
           TAG=$(echo $GITHUB_REF | cut -d / -f 3)
           VERSION=$TAG
           REPO=$(echo $GITHUB_REPOSITORY | cut -d / -f 2)
