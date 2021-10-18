@@ -12,7 +12,6 @@ jobs:
           - linux-x64
           - mac-x64
           - alpine-x64
-          - win-x64
     steps:
     - uses: actions/checkout@v2
       with:
@@ -22,6 +21,7 @@ jobs:
         node-version: '14'
     - run: npm ci
     - run: |
+        set -xeu
         npm run piping-build
         ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
     - name: tar.gz
@@ -30,6 +30,28 @@ jobs:
       with:
         name: build_x64
         path: piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz
+
+  # NOTE: Windows build is separated because using zip
+  build_win_x64:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - run: npm ci
+      - run: |
+          set -xeu
+          npm run piping-build
+          ./node_modules/.bin/pkg --out-path=piping-server-pkg-win-x64 --targets=node14-win-x64 ./piping-server
+      - name: zip
+        run: zip -r piping-server-pkg-win-x64.zip ./piping-server-pkg-win-x64
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build_x64
+          path: piping-server-pkg-win-x64.zip
 
   build_arm64_executables:
     runs-on: ubuntu-18.04
@@ -166,14 +188,14 @@ jobs:
 
   windows_operational_test:
     runs-on: windows-2019
-    needs: build_x64_executables
+    needs: build_win_x64
     steps:
     - uses: actions/download-artifact@v2
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+    - name: Unarchive zip
+      run: unzip piping-server-pkg-win-x64.zip
     - name: Create certificates
       run: |
         mkdir ssl_certs
@@ -185,7 +207,7 @@ jobs:
       run: |
         # Run a server in background
         $args = @("--http-port=8080", "--enable-https", "--https-port=8443", "--key-path=.\ssl_certs\server.key", "--crt-path=.\ssl_certs\server.crt")
-        $server_pid = Start-Process -PassThru -FilePath .\dist\piping-server-win-x64.exe -ArgumentList $args | foreach { $_.Id }
+        $server_pid = Start-Process -PassThru -FilePath .\piping-server-pkg-win-x64\piping-server.exe -ArgumentList $args | foreach { $_.Id }
         # Wait for server running
         sleep 1
         # Create a file to send
