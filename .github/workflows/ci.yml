@@ -202,7 +202,9 @@ jobs:
         name: build_x64
         path: .
     - name: Unarchive zip
-      run: unzip piping-server-pkg-win-x64.zip
+      run: |
+        dir
+        unzip piping-server-pkg-win-x64.zip
     - name: Create certificates
       run: |
         mkdir ssl_certs
