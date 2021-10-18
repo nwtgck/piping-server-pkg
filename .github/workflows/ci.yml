@@ -63,7 +63,10 @@ jobs:
         name: build_x64
         path: .
     - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+      run: |
+        set -xeu
+        ls
+        tar xvf dist_x64.tar
     - name: Operational test
       run: |
         set -xeu
