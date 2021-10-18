@@ -68,7 +68,7 @@ jobs:
     - name: tar.gz or zip
       run: |
         set -xeu
-        if [ "${{ matrix.pkg_target_without_node }}" = "win-x64" ]; then
+        if [ "${{ matrix.pkg_target_without_node }}" = "win-arm64" ]; then
           zip -r piping-server-pkg-${{ matrix.pkg_target_without_node }}.zip ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
         else
           tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
