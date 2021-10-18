@@ -24,12 +24,12 @@ jobs:
     - run: |
         npm run piping-build
         ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
-    - name: Tar for preserving executable permissions
-      run: tar cvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+    - name: tar.gz
+      run: tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path: piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar
+        path: piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz
 
   build_arm64_executables:
     runs-on: ubuntu-18.04
@@ -62,16 +62,16 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
+    - name: Unarchive tar.gz
       run: |
         set -xeu
         ls
-        tar xvf dist_x64.tar
+        tar xvf piping-server-pkg-linuxstatic-x64.tar.gz
     - name: Operational test
       run: |
         set -xeu
         # Run a server in background
-        ./dist/piping-server-linux-x64 --http-port=8080 &> ./piping-server.log &
+        ./piping-server-pkg-linuxstatic-x64/piping-server --http-port=8080 &> ./piping-server.log &
         # Get server PID
         server_pid=$!
         # Wait for server running
@@ -101,16 +101,16 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+    - name: Unarchive tar.gz
+      run: tar xvf piping-server-pkg-alpine-x64.tar.gz
     - name: Operational test
       run: |
-        docker run --rm -i -v $PWD/dist:/dist alpine:3.14 /bin/sh << EOF
+        docker run --rm -i -v $PWD:/app alpine:3.14 /bin/sh << EOF
         set -xeu
         apk add curl
 
         # Run a server in background
-        ./dist/piping-server-alpine-x64 --http-port=8080 &> ./piping-server.log &
+        /app/piping-server-pkg-alpine-x64/piping-server --http-port=8080 &> ./piping-server.log &
         # Wait for server running
         sleep 1
         # Create a file to send
@@ -136,13 +136,13 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+    - name: Unarchive tar.gz
+      run: tar xvf piping-server-pkg-mac-x64.tar.gz
     - name: Operational test
       run: |
         set -xeu
         # Run a server in background
-        ./dist/piping-server-macos-x64 --http-port=8080 &> ./piping-server.log &
+        ./piping-server-pkg-mac-x64/piping-server --http-port=8080 &> ./piping-server.log &
         # Get server PID
         server_pid=$!
         # Wait for server running
