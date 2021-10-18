@@ -36,7 +36,9 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path: piping-server-pkg-*
+        path:
+          piping-server-pkg-*.tar.gz
+          piping-server-pkg-*.zip
 
 #  # NOTE: Windows build is separated because using zip
 #  build_win_x64:
