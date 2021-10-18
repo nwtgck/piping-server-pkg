@@ -5,6 +5,14 @@ on: [push, pull_request]
 jobs:
   build_x64_executables:
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        pkg_target_without_node:
+          - linuxstatic-x64
+          - linux-x64
+          - mac-x64
+          - alpine-x64
+          - win-x64
     steps:
     - uses: actions/checkout@v2
       with:
@@ -13,13 +21,15 @@ jobs:
       with:
         node-version: '14'
     - run: npm ci
-    - run: npm run build-x64
+    - run: |
+        npm run piping-build
+        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
     - name: Tar for preserving executable permissions
-      run: tar cvf dist_x64.tar ./dist/
+      run: tar cvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path: dist_x64.tar
+        path: piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar
 
   build_arm64_executables:
     runs-on: ubuntu-18.04
