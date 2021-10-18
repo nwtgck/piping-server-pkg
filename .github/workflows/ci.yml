@@ -40,30 +40,16 @@ jobs:
           piping-server-pkg-*.tar.gz
           piping-server-pkg-*.zip
 
-#  # NOTE: Windows build is separated because using zip
-#  build_win_x64:
-#    runs-on: ubuntu-18.04
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          submodules: true
-#      - uses: actions/setup-node@v1
-#        with:
-#          node-version: '14'
-#      - run: npm ci
-#      - run: |
-#          set -xeu
-#          npm run piping-build
-#          ./node_modules/.bin/pkg --out-path=piping-server-pkg-win-x64 --targets=node14-win-x64 ./piping-server
-#      - name: zip
-#        run: zip -r piping-server-pkg-win-x64.zip ./piping-server-pkg-win-x64
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: build_x64
-#          path: piping-server-pkg-win-x64.zip
-
   build_arm64_executables:
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        pkg_target_without_node:
+          - linuxstatic-arm64
+          - linux-arm64
+          - mac-arm64
+          - alpine-arm64
+          - win-arm64
     steps:
     - uses: actions/checkout@v2
       with:
@@ -76,14 +62,23 @@ jobs:
         set -xeu
         cd /app
         npm ci
-        npm run build-arm64
+        npm run piping-build
+        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
         EOF
-    - name: Tar for preserving executable permissions
-      run: tar cvf dist_arm64.tar ./dist/
+    - name: tar.gz or zip
+      run: |
+        set -xeu
+        if [ "${{ matrix.pkg_target_without_node }}" = "win-x64" ]; then
+          zip -r piping-server-pkg-${{ matrix.pkg_target_without_node }}.zip ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        else
+          tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        fi
     - uses: actions/upload-artifact@v2
       with:
         name: build_arm64
-        path: dist_arm64.tar
+        path: |
+          piping-server-pkg-*.tar.gz
+          piping-server-pkg-*.zip
 
   linux_operational_test:
     runs-on: ubuntu-18.04
