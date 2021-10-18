@@ -8,9 +8,8 @@
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
-curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-1/piping-server-linuxstatic-x64
-chmod +x piping-server-linuxstatic-x64
-./piping-server-linuxstatic-x64 --http-port=8888
+curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-2/piping-server-pkg-linuxstatic-x64.tar.gz | tar xzvf -
+./piping-server-pkg-linuxstatic-x64/piping-server --http-port=8888
 ```
 
 ## Run on macOS
@@ -18,30 +17,25 @@ chmod +x piping-server-linuxstatic-x64
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
-curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-1/piping-server-macos-x64
-chmod +x piping-server-macos-x64
-./piping-server-macos-x64 --http-port=8888
+curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-2/piping-server-pkg-mac-x64.tar.gz | tar xzvf -
+./piping-server-pkg-mac-x64/piping-server --http-port=8888
 ```
 
 ## Run on Windows
 
-Run the command below in PowerShell, and a server runs on <http://localhost:8888>.
+Download zip from <https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-2/piping-server-pkg-win-x64.zip>, extract it and run the command below, and a server runs on <http://localhost:8888>.
 
 ```ps1
-iwr https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-1/piping-server-win-x64.exe -OutFile piping-server-win-x64.exe
-.\piping-server-win-x64.exe --http-port=8888
+.\piping-server.exe --http-port=8888
 ```
-
-or download from <https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-1/piping-server-win.exe>.
 
 ## Run on Alpine
 
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
-curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-1/piping-server-alpine-x64
-chmod +x piping-server-alpine-x64
-./piping-server-alpine-x64 --http-port=8888
+curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-2/piping-server-pkg-alpine-x64.tar.gz | tar xzvf -
+./piping-server-pkg-alpine-x64/piping-server --http-port=8888
 ```
 
 ## Run on Linux on ARM
@@ -49,9 +43,8 @@ chmod +x piping-server-alpine-x64
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
-curl -LO https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-1/piping-server-linuxstatic-arm64
-chmod +x piping-server-linuxstatic-arm64
-./piping-server-linuxstatic-arm64 --http-port=8888
+curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.7.0-2/piping-server-pkg-linuxstatic-arm64.tar.gz | tar xzvf -
+./piping-server-pkg-linuxstatic-arm64/piping-server --http-port=8888
 ```
 
 Other built binaries found in <https://github.com/nwtgck/piping-server-pkg/releases> 
