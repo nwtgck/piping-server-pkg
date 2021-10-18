@@ -4,9 +4,9 @@
   "description": "Piping Server in single binary (Experimental)",
   "scripts": {
     "piping-build": "cd piping-server && npm ci && npm run build",
-    "pkg-x64": "pkg --out-path=dist --targets=node14-linuxstatic-x64,node14-linux-x64,node14-mac-x64,node14-alpine-x64,node14-win-x64 piping-server && node scripts/add-suffix-to-bin.js x64",
+    "pkg-x64": "pkg --out-path=dist --targets=node14-linuxstatic-x64,node14-linux-x64,node14-mac-x64,node14-alpine-x64,node14-win-x64 ./piping-server",
     "build-x64": "npm run piping-build && npm run pkg-x64",
-    "pkg-arm64": "pkg --out-path=dist --targets=node14-linuxstatic-arm64,node14-linux-arm64,node14-mac-arm64,node14-alpine-arm64,node14-win-arm64 piping-server && node scripts/add-suffix-to-bin.js arm64",
+    "pkg-arm64": "pkg --out-path=dist --targets=node14-linuxstatic-arm64,node14-linux-arm64,node14-mac-arm64,node14-alpine-arm64,node14-win-arm64 ./piping-server",
     "build-arm64": "npm run piping-build && npm run pkg-arm64",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

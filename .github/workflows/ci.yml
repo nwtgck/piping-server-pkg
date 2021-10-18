@@ -5,6 +5,14 @@ on: [push, pull_request]
 jobs:
   build_x64_executables:
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        pkg_target_without_node:
+          - linuxstatic-x64
+          - linux-x64
+          - mac-x64
+          - alpine-x64
+          - win-x64
     steps:
     - uses: actions/checkout@v2
       with:
@@ -13,16 +21,35 @@ jobs:
       with:
         node-version: '14'
     - run: npm ci
-    - run: npm run build-x64
-    - name: Tar for preserving executable permissions
-      run: tar cvf dist_x64.tar ./dist/
+    - run: |
+        set -xeu
+        npm run piping-build
+        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
+    - name: tar.gz or zip
+      run: |
+        set -xeu
+        if [ "${{ matrix.pkg_target_without_node }}" = "win-x64" ]; then
+          zip -r piping-server-pkg-${{ matrix.pkg_target_without_node }}.zip ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        else
+          tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        fi
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path: dist_x64.tar
+        path: |
+          piping-server-pkg-*.tar.gz
+          piping-server-pkg-*.zip
 
   build_arm64_executables:
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        pkg_target_without_node:
+          - linuxstatic-arm64
+          - linux-arm64
+          - mac-arm64
+          - alpine-arm64
+          - win-arm64
     steps:
     - uses: actions/checkout@v2
       with:
@@ -35,14 +62,23 @@ jobs:
         set -xeu
         cd /app
         npm ci
-        npm run build-arm64
+        npm run piping-build
+        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
         EOF
-    - name: Tar for preserving executable permissions
-      run: tar cvf dist_arm64.tar ./dist/
+    - name: tar.gz or zip
+      run: |
+        set -xeu
+        if [ "${{ matrix.pkg_target_without_node }}" = "win-arm64" ]; then
+          zip -r piping-server-pkg-${{ matrix.pkg_target_without_node }}.zip ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        else
+          tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        fi
     - uses: actions/upload-artifact@v2
       with:
         name: build_arm64
-        path: dist_arm64.tar
+        path: |
+          piping-server-pkg-*.tar.gz
+          piping-server-pkg-*.zip
 
   linux_operational_test:
     runs-on: ubuntu-18.04
@@ -52,13 +88,13 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+    - name: Unarchive tar.gz
+      run: tar xvf piping-server-pkg-linuxstatic-x64.tar.gz
     - name: Operational test
       run: |
         set -xeu
         # Run a server in background
-        ./dist/piping-server-linux-x64 --http-port=8080 &> ./piping-server.log &
+        ./piping-server-pkg-linuxstatic-x64/piping-server --http-port=8080 &> ./piping-server.log &
         # Get server PID
         server_pid=$!
         # Wait for server running
@@ -88,16 +124,16 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+    - name: Unarchive tar.gz
+      run: tar xvf piping-server-pkg-alpine-x64.tar.gz
     - name: Operational test
       run: |
-        docker run --rm -i -v $PWD/dist:/dist alpine:3.14 /bin/sh << EOF
+        docker run --rm -i -v $PWD:/app alpine:3.14 /bin/sh << EOF
         set -xeu
         apk add curl
 
         # Run a server in background
-        ./dist/piping-server-alpine-x64 --http-port=8080 &> ./piping-server.log &
+        /app/piping-server-pkg-alpine-x64/piping-server --http-port=8080 &> ./piping-server.log &
         # Wait for server running
         sleep 1
         # Create a file to send
@@ -123,13 +159,13 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+    - name: Unarchive tar.gz
+      run: tar xvf piping-server-pkg-mac-x64.tar.gz
     - name: Operational test
       run: |
         set -xeu
         # Run a server in background
-        ./dist/piping-server-macos-x64 --http-port=8080 &> ./piping-server.log &
+        ./piping-server-pkg-mac-x64/piping-server --http-port=8080 &> ./piping-server.log &
         # Get server PID
         server_pid=$!
         # Wait for server running
@@ -159,8 +195,8 @@ jobs:
       with:
         name: build_x64
         path: .
-    - name: Unarchive dist_x64.tar
-      run: tar xvf dist_x64.tar
+    - name: Unarchive zip
+      run: unzip piping-server-pkg-win-x64.zip
     - name: Create certificates
       run: |
         mkdir ssl_certs
@@ -172,7 +208,7 @@ jobs:
       run: |
         # Run a server in background
         $args = @("--http-port=8080", "--enable-https", "--https-port=8443", "--key-path=.\ssl_certs\server.key", "--crt-path=.\ssl_certs\server.crt")
-        $server_pid = Start-Process -PassThru -FilePath .\dist\piping-server-win-x64.exe -ArgumentList $args | foreach { $_.Id }
+        $server_pid = Start-Process -PassThru -FilePath .\piping-server-pkg-win-x64\piping-server.exe -ArgumentList $args | foreach { $_.Id }
         # Wait for server running
         sleep 1
         # Create a file to send
@@ -213,18 +249,16 @@ jobs:
         with:
           name: build_x64
           path: .
-      - name: Unarchive dist_x64.tar
-        run: tar xvf dist_x64.tar
       - uses: actions/download-artifact@v2
         with:
           name: build_arm64
           path: .
-      - name: Unarchive dist_arm64.tar
-        run: tar xvf dist_arm64.tar
       - run: |
           set -xeu
+          mkdir ./publish_dir
+          mv piping-server-pkg-* ./publish_dir
           TAG=$(echo $GITHUB_REF | cut -d / -f 3)
           VERSION=$TAG
           REPO=$(echo $GITHUB_REPOSITORY | cut -d / -f 2)
           curl -L https://github.com/tcnksm/ghr/releases/download/v0.14.0/ghr_v0.14.0_linux_amd64.tar.gz | tar xzf -
-          ./ghr_v0.14.0_linux_amd64/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${GITHUB_ACTOR} -r ${REPO} -c ${GITHUB_SHA} -delete ${VERSION} ./dist
+          ./ghr_v0.14.0_linux_amd64/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${GITHUB_ACTOR} -r ${REPO} -c ${GITHUB_SHA} -delete ${VERSION} ./publish_dir
