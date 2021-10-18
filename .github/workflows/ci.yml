@@ -36,7 +36,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path:
+        path: |
           piping-server-pkg-*.tar.gz
           piping-server-pkg-*.zip
 
