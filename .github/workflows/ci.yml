@@ -254,18 +254,16 @@ jobs:
         with:
           name: build_x64
           path: .
-      - name: Unarchive dist_x64.tar
-        run: tar xvf dist_x64.tar
       - uses: actions/download-artifact@v2
         with:
           name: build_arm64
           path: .
-      - name: Unarchive dist_arm64.tar
-        run: tar xvf dist_arm64.tar
       - run: |
           set -xeu
+          mkdir ./publish_dir
+          mv piping-server-pkg-* ./publish_dir
           TAG=$(echo $GITHUB_REF | cut -d / -f 3)
           VERSION=$TAG
           REPO=$(echo $GITHUB_REPOSITORY | cut -d / -f 2)
           curl -L https://github.com/tcnksm/ghr/releases/download/v0.14.0/ghr_v0.14.0_linux_amd64.tar.gz | tar xzf -
-          ./ghr_v0.14.0_linux_amd64/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${GITHUB_ACTOR} -r ${REPO} -c ${GITHUB_SHA} -delete ${VERSION} ./dist
+          ./ghr_v0.14.0_linux_amd64/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${GITHUB_ACTOR} -r ${REPO} -c ${GITHUB_SHA} -delete ${VERSION} ./publish_dir
