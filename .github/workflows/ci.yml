@@ -12,6 +12,7 @@ jobs:
           - linux-x64
           - mac-x64
           - alpine-x64
+          - win-x64
     steps:
     - uses: actions/checkout@v2
       with:
@@ -24,34 +25,40 @@ jobs:
         set -xeu
         npm run piping-build
         ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
-    - name: tar.gz
-      run: tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+    - name: tar.gz or zip
+      run: |
+        set -xeu
+        if [ "${{ matrix.pkg_target_without_node }}" = "win-x64" ]; then
+          zip -r piping-server-pkg-${{ matrix.pkg_target_without_node }}.zip ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        else
+          tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
+        fi
     - uses: actions/upload-artifact@v2
       with:
         name: build_x64
-        path: piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz
+        path: piping-server-pkg-*
 
-  # NOTE: Windows build is separated because using zip
-  build_win_x64:
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14'
-      - run: npm ci
-      - run: |
-          set -xeu
-          npm run piping-build
-          ./node_modules/.bin/pkg --out-path=piping-server-pkg-win-x64 --targets=node14-win-x64 ./piping-server
-      - name: zip
-        run: zip -r piping-server-pkg-win-x64.zip ./piping-server-pkg-win-x64
-      - uses: actions/upload-artifact@v2
-        with:
-          name: build_x64
-          path: piping-server-pkg-win-x64.zip
+#  # NOTE: Windows build is separated because using zip
+#  build_win_x64:
+#    runs-on: ubuntu-18.04
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          submodules: true
+#      - uses: actions/setup-node@v1
+#        with:
+#          node-version: '14'
+#      - run: npm ci
+#      - run: |
+#          set -xeu
+#          npm run piping-build
+#          ./node_modules/.bin/pkg --out-path=piping-server-pkg-win-x64 --targets=node14-win-x64 ./piping-server
+#      - name: zip
+#        run: zip -r piping-server-pkg-win-x64.zip ./piping-server-pkg-win-x64
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: build_x64
+#          path: piping-server-pkg-win-x64.zip
 
   build_arm64_executables:
     runs-on: ubuntu-18.04
@@ -188,7 +195,7 @@ jobs:
 
   windows_operational_test:
     runs-on: windows-2019
-    needs: build_win_x64
+    needs: build_x64_executables
     steps:
     - uses: actions/download-artifact@v2
       with:
