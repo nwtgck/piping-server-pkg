@@ -3,13 +3,22 @@
 
 [Piping Server](https://github.com/nwtgck/piping-server) into an portable executable by [vercel/pkg](https://github.com/vercel/pkg) for Linux, macOS, Windows and Alpine
 
-## Run on Linux
+## Run on Linux (x64, amd64)
 
 Run the command below, and a server runs on <http://localhost:8888>.
 
 ```bash
 curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.8.0-1/piping-server-pkg-linuxstatic-x64.tar.gz | tar xzvf -
 ./piping-server-pkg-linuxstatic-x64/piping-server --http-port=8888
+```
+
+## Run on Linux (ARM64)
+
+Run the command below, and a server runs on <http://localhost:8888>.
+
+```bash
+curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.8.0-1/piping-server-pkg-linuxstatic-arm64.tar.gz | tar xzvf -
+./piping-server-pkg-linuxstatic-arm64/piping-server --http-port=8888
 ```
 
 ## Run on macOS
@@ -37,15 +46,6 @@ Run the command below, and a server runs on <http://localhost:8888>.
 ```bash
 curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.8.0-1/piping-server-pkg-alpine-x64.tar.gz | tar xzvf -
 ./piping-server-pkg-alpine-x64/piping-server --http-port=8888
-```
-
-## Run on Linux on ARM
-
-Run the command below, and a server runs on <http://localhost:8888>.
-
-```bash
-curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.8.0-1/piping-server-pkg-linuxstatic-arm64.tar.gz | tar xzvf -
-./piping-server-pkg-linuxstatic-arm64/piping-server --http-port=8888
 ```
 
 Other built binaries found in <https://github.com/nwtgck/piping-server-pkg/releases> 
