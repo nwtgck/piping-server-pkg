@@ -61,10 +61,10 @@ jobs:
         set -xeu
         docker run --rm -i -v $PWD:/app --platform=linux/arm/v7 node:16 bash << EOF
         set -xeu
-        # NOTE: npm tells "To permanently fix this problem, please run:"
-        chown -R 1001:116 "/root/.npm"
         cd /app
         npm ci
+        # NOTE: npm tells "To permanently fix this problem, please run:"
+        chown -R 1001:116 "/root/.npm"
         npm run piping-build
         ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node16-${{ matrix.pkg_target_without_node }} ./piping-server
         EOF
