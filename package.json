@@ -4,10 +4,10 @@
   "description": "Piping Server in single binary (Experimental)",
   "scripts": {
     "piping-build": "cd piping-server && npm ci && npm run build",
-    "pkg-x64": "pkg --out-path=dist --targets=node14-linuxstatic-x64,node14-linux-x64,node14-mac-x64,node14-alpine-x64,node14-win-x64 ./piping-server",
+    "pkg-x64": "pkg --out-path=dist --targets=node16-linuxstatic-x64,node16-linux-x64,node16-mac-x64,node16-alpine-x64,node16-win-x64 ./piping-server",
     "build-x64": "npm run piping-build && npm run pkg-x64",
-    "pkg-arm64": "pkg --out-path=dist --targets=node14-linuxstatic-arm64,node14-linux-arm64,node14-mac-arm64,node14-alpine-arm64,node14-win-arm64 ./piping-server",
-    "build-arm64": "npm run piping-build && npm run pkg-arm64",
+    "pkg-arm": "pkg --out-path=dist --targets=node16-linuxstatic-arm64,node16-linuxstatic-armv7,node16-linux-arm64,node16-mac-arm64,node16-alpine-arm64,node16-win-arm64 ./piping-server",
+    "build-arm": "npm run piping-build && npm run pkg-arm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ryo Ota <nwtgck@nwtgck.org> (https://github.com/nwtgck)",

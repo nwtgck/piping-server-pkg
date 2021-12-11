@@ -65,5 +65,5 @@ npm run build-x64
 ```bash
 cd <this repo>
 npm ci
-npm run build-arm64
+npm run build-arm
 ```
