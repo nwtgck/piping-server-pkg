@@ -60,13 +60,13 @@ jobs:
     - run: echo $UID
     - run: |
         set -xeu
-        docker run --rm -i -v $PWD:/app --platform=linux/arm64/v8 -e CI_UID=$UID node:16 bash << 'EOF'
+        docker run --rm -i -v $PWD:/app --platform=linux/arm64/v8 -e CI_UID=$UID node:14 bash << 'EOF'
         set -xeu
         cd /app
         npm ci
-        echo $CI_UID
+        # echo $CI_UID
         # NOTE: npm tells "To permanently fix this problem, please run:"
-        chown -R $CI_UID "/root/.npm"
+        # chown -R $CI_UID "/root/.npm"
         npm run piping-build
         ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node16-${{ matrix.pkg_target_without_node }} ./piping-server
         EOF
