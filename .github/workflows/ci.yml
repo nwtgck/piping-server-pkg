@@ -19,12 +19,12 @@ jobs:
         submodules: true
     - uses: actions/setup-node@v1
       with:
-        node-version: '14'
+        node-version: '16'
     - run: npm ci
     - run: |
         set -xeu
         npm run piping-build
-        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
+        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node16-${{ matrix.pkg_target_without_node }} ./piping-server
     - name: tar.gz or zip
       run: |
         set -xeu
@@ -46,6 +46,7 @@ jobs:
       matrix:
         pkg_target_without_node:
           - linuxstatic-arm64
+          - linuxstatic-armv7
           - linux-arm64
           - mac-arm64
           - alpine-arm64
@@ -58,12 +59,12 @@ jobs:
       uses: docker/setup-qemu-action@v1
     - run: |
         set -xeu
-        docker run --rm -i -v $PWD:/app arm32v7/node:14 bash << EOF
+        docker run --rm -i -v $PWD:/app arm32v7/node:16 bash << EOF
         set -xeu
         cd /app
         npm ci
         npm run piping-build
-        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node14-${{ matrix.pkg_target_without_node }} ./piping-server
+        ./node_modules/.bin/pkg --out-path=piping-server-pkg-${{ matrix.pkg_target_without_node }} --targets=node16-${{ matrix.pkg_target_without_node }} ./piping-server
         EOF
     - name: tar.gz or zip
       run: |
