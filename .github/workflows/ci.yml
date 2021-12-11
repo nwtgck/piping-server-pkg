@@ -60,7 +60,7 @@ jobs:
     - run: echo $UID
     - run: |
         set -xeu
-        docker run --rm -i -v $PWD:/app --platform=linux/arm/v7 -e CI_UID=$UID node:16 bash << 'EOF'
+        docker run --rm -i -v $PWD:/app --platform=linux/arm64/v8 -e CI_UID=$UID node:16 bash << 'EOF'
         set -xeu
         cd /app
         npm ci
