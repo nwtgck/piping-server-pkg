@@ -61,7 +61,8 @@ jobs:
         set -xeu
         docker run --rm -i -v $PWD:/app --platform=linux/arm/v7 node:16 bash << EOF
         set -xeu
-        npm config set prefix '~/.npm-global'
+        # NOTE: npm tells "To permanently fix this problem, please run:"
+        chown -R 1001:116 "/root/.npm"
         cd /app
         npm ci
         npm run piping-build
