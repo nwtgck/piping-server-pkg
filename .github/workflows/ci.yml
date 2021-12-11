@@ -61,6 +61,7 @@ jobs:
         set -xeu
         docker run --rm -i -v $PWD:/app --platform=linux/arm/v7 node:16 bash << EOF
         set -xeu
+        npm config set prefix '~/.npm-global'
         cd /app
         npm ci
         npm run piping-build
