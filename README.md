@@ -21,6 +21,16 @@ curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.8.1-1/p
 ./piping-server-pkg-linuxstatic-arm64/piping-server --http-port=8888
 ```
 
+## Run on Linux (ARMv7 32bit)
+
+Run the command below, and a server runs on <http://localhost:8888>.
+
+```bash
+curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.8.1-1/piping-server-pkg-linuxstatic-armv7.tar.gz | tar xzvf -
+./piping-server-pkg-linuxstatic-armv7/piping-server --http-port=8888
+```
+
+
 ## Run on macOS
 
 Run the command below, and a server runs on <http://localhost:8888>.
