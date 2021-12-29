@@ -61,6 +61,10 @@ jobs:
         set -xeu
         docker run --rm -i -v $PWD:/app --platform=linux/arm64/v8 node:14 bash << 'EOF'
         set -xeu
+        # Install ldid for macos-arm64 signing
+        curl -LO https://github.com/ProcursusTeam/ldid/releases/download/v2.1.5-procursus2/ldid_linux_aarch64
+        chmod +x ldid_linux_aarch64
+        mv ./ldid_linux_aarch64 /usr/local/bin/ldid
         cd /app
         npm ci
         npm run piping-build
