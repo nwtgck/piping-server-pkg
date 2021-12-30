@@ -41,7 +41,7 @@ xattr -d com.apple.quarantine ./piping-server-pkg-mac-x64/piping-server
 ./piping-server-pkg-mac-x64/piping-server --http-port=8888
 ```
 
-## Run on macOS (ARM)
+## Run on macOS (Apple Silicon)
 
 Run the command below, and a server runs on <http://localhost:8888>.
 
