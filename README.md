@@ -50,6 +50,17 @@ curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.9.0/pip
 ./piping-server-pkg-mac-arm64/piping-server --http-port=8888
 ```
 
+## Brew
+
+Run the command below, and a server runs on <http://localhost:8888>.
+
+```bash
+brew install nwtgck/piping-server-pkg/piping-server
+piping-server --http-port=8888
+```
+
+You can brew-install on both macOS and Linux. Repository: <https://github.com/nwtgck/homebrew-piping-server-pkg>
+
 ## Run on Windows
 
 Download zip from <https://github.com/nwtgck/piping-server-pkg/releases/download/v1.9.0/piping-server-pkg-win-x64.zip>, extract it and run the command below, and a server runs on <http://localhost:8888>.
