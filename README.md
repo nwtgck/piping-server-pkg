@@ -80,6 +80,15 @@ curl -L https://github.com/nwtgck/piping-server-pkg/releases/download/v1.9.0/pip
 
 Other built binaries found in <https://github.com/nwtgck/piping-server-pkg/releases> 
 
+## Docker
+
+Run the command below, and a server runs on <http://localhost:8888>.
+
+```bash
+docker run -p 8888:8888 nwtgck/piping-server-pkg --http-port=8888
+```
+<https://github.com/nwtgck/docker-piping-server-pkg>
+
 ## Automation
 
 These releases are automatically published by GitHub Actions.
