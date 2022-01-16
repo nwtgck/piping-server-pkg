@@ -138,7 +138,7 @@ jobs:
         apk add curl openssl
 
         # Create certificates
-        (mkdir ssl_certs && cd ssl_certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -sha256 -nodes --subj '/CN=localhost/')
+        mkdir ssl_certs && cd ssl_certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -sha256 -nodes --subj '/CN=localhost/' && cd -
         # Run a server in background
         /app/piping-server-pkg-alpine-x64/piping-server --http-port=8181 --enable-https --https-port=8443 --crt-path=./ssl_certs/server.crt --key-path=./ssl_certs/server.key &> ./piping-server.log &
         # Wait for server running
