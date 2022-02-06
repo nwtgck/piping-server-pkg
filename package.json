@@ -1,7 +1,7 @@
 {
   "name": "piping-server-pkg",
-  "version": "0.1.0-SNAPSHOT",
-  "description": "Piping Server in single binary (Experimental)",
+  "private": true,
+  "description": "Portable Piping Server",
   "scripts": {
     "piping-build": "cd piping-server && npm ci && npm run build",
     "pkg-x64": "pkg --out-path=dist --targets=node16-linuxstatic-x64,node16-linux-x64,node16-mac-x64,node16-alpine-x64,node16-win-x64 ./piping-server",

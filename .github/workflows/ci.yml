@@ -59,6 +59,7 @@ jobs:
       uses: docker/setup-qemu-action@v1
     - run: |
         set -xeu
+        # NOTE: node:16 image causes an error "glob error [Error: EACCES: permission denied, scandir '/root/.npm/_logs'] { ..."
         docker run --rm -i -v $PWD:/app --platform=linux/arm64/v8 node:14 bash << 'EOF'
         set -xeu
         # Install ldid for macos-arm64 signing
