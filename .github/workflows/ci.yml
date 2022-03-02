@@ -14,7 +14,7 @@ jobs:
           - alpine-x64
           - win-x64
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
     - uses: actions/setup-node@v3.0.0
@@ -52,7 +52,7 @@ jobs:
           - alpine-arm64
           - win-arm64
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
     - name: Set up QEMU
