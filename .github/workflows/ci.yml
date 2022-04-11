@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-18.04
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: build_x64
         path: .
@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-18.04
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: build_x64
         path: .
@@ -161,7 +161,7 @@ jobs:
     runs-on: macos-10.15
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: build_x64
         path: .
@@ -197,7 +197,7 @@ jobs:
     runs-on: windows-2019
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: build_x64
         path: .
@@ -251,11 +251,11 @@ jobs:
       - build_arm_executables
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: build_x64
           path: .
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: build_arm
           path: .
