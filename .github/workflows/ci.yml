@@ -56,7 +56,7 @@ jobs:
       with:
         submodules: true
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
     - run: |
         set -xeu
         # NOTE: node:16 image causes an error "glob error [Error: EACCES: permission denied, scandir '/root/.npm/_logs'] { ..."
