@@ -13,6 +13,6 @@
   "author": "Ryo Ota <nwtgck@nwtgck.org> (https://github.com/nwtgck)",
   "license": "MIT",
   "devDependencies": {
-    "pkg": "^5.6.0"
+    "pkg": "^5.7.0"
   }
 }
