@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build_x64_executables:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         pkg_target_without_node:
@@ -41,7 +41,7 @@ jobs:
           piping-server-pkg-*.zip
 
   build_arm_executables:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         pkg_target_without_node:
@@ -87,7 +87,7 @@ jobs:
           piping-server-pkg-*.zip
 
   linux_operational_test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
     - uses: actions/download-artifact@v3
@@ -123,7 +123,7 @@ jobs:
         kill $server_pid
 
   alpine_operational_test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
     - uses: actions/download-artifact@v3
@@ -249,7 +249,7 @@ jobs:
       - macos_operational_test
       - windows_operational_test
       - build_arm_executables
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/download-artifact@v3
         with:
