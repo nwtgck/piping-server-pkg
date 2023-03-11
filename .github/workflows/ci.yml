@@ -135,7 +135,7 @@ jobs:
     - name: Show server logs from piping-server-check
       run: cat /tmp/shared/logs/*
 
-  macos_operational_test:
+  macos_piping_server_check:
     runs-on: macos-11
     needs: build_x64_executables
     steps:
@@ -145,31 +145,15 @@ jobs:
         path: .
     - name: Unarchive tar.gz
       run: tar xvf piping-server-pkg-mac-x64.tar.gz
-    - name: Operational test
-      run: |
-        set -xeu
-        # Run a server in background
-        ./piping-server-pkg-mac-x64/piping-server --http-port=8080 &> ./piping-server.log &
-        # Get server PID
-        server_pid=$!
-        # Wait for server running
-        sleep 1
-        # Create a file to send
-        echo 'hello, world' > /tmp/hello.txt
-        # Send and wait for a receiver
-        curl -T /tmp/hello.txt localhost:8080/mypath &
-        # Get data as a file
-        curl localhost:8080/mypath > /tmp/download.txt
-        # Print downloaded file
-        cat  /tmp/download.txt
-        # Test the equality
-        diff /tmp/hello.txt /tmp/download.txt
-
-        # Print server's log
-        cat ./piping-server.log
-
-        # Stop the server
-        kill $server_pid
+    - name: Create certificates
+      run: cd /tmp && mkdir ssl_certs && cd ssl_certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -sha256 -nodes --subj '/CN=localhost/'
+    - name: Install piping-server-check
+      run: cd /tmp && curl -L https://github.com/nwtgck/piping-server-check/releases/download/v${PIPING_SERVER_CHECK_VERSION}/piping-server-check-${PIPING_SERVER_CHECK_VERSION}-darwin-amd64.tar.gz | tar xf - && sudo mv piping-server-check /usr/local/bin
+    - name: piping-server-check
+      run: piping-server-check --http1.0 --http1.0-tls --http1.1 --http1.1-tls --h2 --tls-skip-verify --compromise http1.0/multipart_form_data --compromise http1.0-tls/multipart_form_data --concurrency 100 --server-command='mkdir -p /tmp/logs && exec ./piping-server-pkg-mac-x64/piping-server --http-port=$HTTP_PORT --enable-https --https-port=$HTTPS_PORT --crt-path=/tmp/ssl_certs/server.crt --key-path=/tmp/ssl_certs/server.key 2>&1 | tee /tmp/logs/$(date "+%s%3N").log > /dev/stderr' --transfer-speed-byte $((1024 * 1024 * 1024 * 1024)) --transfer-span 3s --transfer-span 10s --transfer-span 1m --transfer-span 2m --transfer-span 3m
+      timeout-minutes: 4.5
+    - name: Show server logs from piping-server-check
+      run: cat /tmp/logs/*
 
   windows_operational_test:
     runs-on: windows-2019
@@ -224,7 +208,7 @@ jobs:
     needs:
       - linux_piping_server_check
       - alpine_piping_server_check
-      - macos_operational_test
+      - macos_piping_server_check
       - windows_operational_test
       - build_arm_executables
     runs-on: ubuntu-20.04
