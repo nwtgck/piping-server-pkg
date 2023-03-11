@@ -2,6 +2,9 @@ name: CI
 
 on: [push, pull_request]
 
+env:
+  PIPING_SERVER_CHECK_VERSION: 0.7.1
+
 jobs:
   build_x64_executables:
     runs-on: ubuntu-20.04
@@ -86,7 +89,7 @@ jobs:
           piping-server-pkg-*.tar.gz
           piping-server-pkg-*.zip
 
-  linux_operational_test:
+  linux_piping_server_check:
     runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
@@ -96,33 +99,17 @@ jobs:
         path: .
     - name: Unarchive tar.gz
       run: tar xvf piping-server-pkg-linuxstatic-x64.tar.gz
-    - name: Operational test
-      run: |
-        set -xeu
-        # Run a server in background
-        ./piping-server-pkg-linuxstatic-x64/piping-server --http-port=8080 &> ./piping-server.log &
-        # Get server PID
-        server_pid=$!
-        # Wait for server running
-        sleep 1
-        # Create a file to send
-        echo 'hello, world' > /tmp/hello.txt
-        # Send and wait for a receiver
-        curl -T /tmp/hello.txt localhost:8080/mypath &
-        # Get data as a file
-        curl localhost:8080/mypath > /tmp/download.txt
-        # Print downloaded file
-        cat  /tmp/download.txt
-        # Test the equality
-        diff /tmp/hello.txt /tmp/download.txt
+    - name: Create certificates
+      run: cd /tmp && mkdir ssl_certs && cd ssl_certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -sha256 -nodes --subj '/CN=localhost/'
+    - name: Install piping-server-check
+      run: cd /tmp && wget -O piping-server-check.deb https://github.com/nwtgck/piping-server-check/releases/download/v${PIPING_SERVER_CHECK_VERSION}/piping-server-check-${PIPING_SERVER_CHECK_VERSION}-linux-amd64.deb && sudo dpkg -i piping-server-check.deb
+    - name: piping-server-check
+      run: piping-server-check --http1.0 --http1.0-tls --http1.1 --http1.1-tls --h2 --tls-skip-verify --compromise http1.0/multipart_form_data --compromise http1.0-tls/multipart_form_data --concurrency 100 --server-command='mkdir -p /tmp/logs && exec ./piping-server-pkg-linuxstatic-x64/piping-server --http-port=$HTTP_PORT --enable-https --https-port=$HTTPS_PORT --crt-path=/tmp/ssl_certs/server.crt --key-path=/tmp/ssl_certs/server.key 2>&1 | tee /tmp/logs/$(date "+%s%3N").log > /dev/stderr' --transfer-speed-byte $((1024 * 1024 * 1024 * 1024)) --transfer-span 3s --transfer-span 10s --transfer-span 1m --transfer-span 2m --transfer-span 3m
+      timeout-minutes: 4.5
+    - name: Show server logs from piping-server-check
+      run: cat /tmp/logs/*
 
-        # Print server's log
-        cat ./piping-server.log
-
-        # Stop the server
-        kill $server_pid
-
-  alpine_operational_test:
+  alpine_piping_server_check:
     runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
@@ -132,32 +119,23 @@ jobs:
         path: .
     - name: Unarchive tar.gz
       run: tar xvf piping-server-pkg-alpine-x64.tar.gz
-    - name: Operational test
+    - run: mkdir /tmp/shared
+    - name: Create certificates
+      run: cd /tmp/shared && mkdir ssl_certs && cd ssl_certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -sha256 -nodes --subj '/CN=localhost/'
+    - name: Install piping-server-check
+      run: cd /tmp/shared && curl -L https://github.com/nwtgck/piping-server-check/releases/download/v${PIPING_SERVER_CHECK_VERSION}/piping-server-check-${PIPING_SERVER_CHECK_VERSION}-linux-amd64.tar.gz | tar xzf -
+    - name: piping-server-check
       run: |
-        docker run --rm -i -v $PWD:/app alpine:3.14 /bin/sh << EOF
+        docker run --rm -i -v $PWD:/app -v /tmp/shared:/tmp/shared alpine:3.14 /bin/sh << 'EOF'
         set -xeu
-        apk add curl
-
-        # Run a server in background
-        /app/piping-server-pkg-alpine-x64/piping-server --http-port=8080 &> ./piping-server.log &
-        # Wait for server running
-        sleep 1
-        # Create a file to send
-        echo 'hello, world' > /tmp/hello.txt
-        # Send and wait for a receiver
-        curl -T /tmp/hello.txt localhost:8080/mypath &
-        # Get data as a file
-        curl localhost:8080/mypath > /tmp/download.txt
-        # Print downloaded file
-        cat  /tmp/download.txt
-        # Test the equality
-        diff /tmp/hello.txt /tmp/download.txt
-
-        # Print server's log
-        cat ./piping-server.log
+        export GITHUB_ACTIONS=true
+        /tmp/shared/piping-server-check --http1.0 --http1.0-tls --http1.1 --http1.1-tls --h2 --tls-skip-verify --compromise http1.0/multipart_form_data --compromise http1.0-tls/multipart_form_data --concurrency 100 --server-command='mkdir -p /tmp/shared/logs && exec /app/piping-server-pkg-alpine-x64/piping-server --http-port=$HTTP_PORT --enable-https --https-port=$HTTPS_PORT --crt-path=/tmp/shared/ssl_certs/server.crt --key-path=/tmp/shared/ssl_certs/server.key 2>&1 | tee /tmp/shared/logs/$(date "+%s%3N").log > /dev/stderr' --transfer-speed-byte $((1024 * 1024 * 1024 * 1024)) --transfer-span 3s --transfer-span 10s --transfer-span 1m --transfer-span 2m --transfer-span 3m
         EOF
+      timeout-minutes: 4.5
+    - name: Show server logs from piping-server-check
+      run: cat /tmp/shared/logs/*
 
-  macos_operational_test:
+  macos_piping_server_check:
     runs-on: macos-11
     needs: build_x64_executables
     steps:
@@ -167,31 +145,15 @@ jobs:
         path: .
     - name: Unarchive tar.gz
       run: tar xvf piping-server-pkg-mac-x64.tar.gz
-    - name: Operational test
-      run: |
-        set -xeu
-        # Run a server in background
-        ./piping-server-pkg-mac-x64/piping-server --http-port=8080 &> ./piping-server.log &
-        # Get server PID
-        server_pid=$!
-        # Wait for server running
-        sleep 1
-        # Create a file to send
-        echo 'hello, world' > /tmp/hello.txt
-        # Send and wait for a receiver
-        curl -T /tmp/hello.txt localhost:8080/mypath &
-        # Get data as a file
-        curl localhost:8080/mypath > /tmp/download.txt
-        # Print downloaded file
-        cat  /tmp/download.txt
-        # Test the equality
-        diff /tmp/hello.txt /tmp/download.txt
-
-        # Print server's log
-        cat ./piping-server.log
-
-        # Stop the server
-        kill $server_pid
+    - name: Create certificates
+      run: cd /tmp && mkdir ssl_certs && cd ssl_certs && openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -sha256 -nodes --subj '/CN=localhost/'
+    - name: Install piping-server-check
+      run: cd /tmp && curl -L https://github.com/nwtgck/piping-server-check/releases/download/v${PIPING_SERVER_CHECK_VERSION}/piping-server-check-${PIPING_SERVER_CHECK_VERSION}-darwin-amd64.tar.gz | tar xf - && sudo mv piping-server-check /usr/local/bin
+    - name: piping-server-check
+      run: piping-server-check --http1.0 --http1.0-tls --http1.1 --http1.1-tls --h2 --tls-skip-verify --compromise http1.0/multipart_form_data --compromise http1.0-tls/multipart_form_data --concurrency 100 --server-command='mkdir -p /tmp/logs && exec ./piping-server-pkg-mac-x64/piping-server --http-port=$HTTP_PORT --enable-https --https-port=$HTTPS_PORT --crt-path=/tmp/ssl_certs/server.crt --key-path=/tmp/ssl_certs/server.key 2>&1 | tee /tmp/logs/$(date "+%s%3N").log > /dev/stderr' --transfer-speed-byte $((1024 * 1024 * 1024 * 1024)) --transfer-span 3s --transfer-span 10s --transfer-span 1m --transfer-span 2m --transfer-span 3m
+      timeout-minutes: 4.5
+    - name: Show server logs from piping-server-check
+      run: cat /tmp/logs/*
 
   windows_operational_test:
     runs-on: windows-2019
@@ -244,9 +206,9 @@ jobs:
   release_executables:
     if: startsWith( github.ref, 'refs/tags/')
     needs:
-      - linux_operational_test
-      - alpine_operational_test
-      - macos_operational_test
+      - linux_piping_server_check
+      - alpine_piping_server_check
+      - macos_piping_server_check
       - windows_operational_test
       - build_arm_executables
     runs-on: ubuntu-20.04
