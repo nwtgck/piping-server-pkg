@@ -59,7 +59,7 @@ jobs:
       with:
         submodules: true
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - run: |
         set -xeu
         # NOTE: Using node:18 takes over 21 minutes
