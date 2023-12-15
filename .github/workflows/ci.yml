@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: build_x64
         path: .
@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: build_x64
         path: .
@@ -145,7 +145,7 @@ jobs:
     runs-on: macos-11
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: build_x64
         path: .
@@ -168,7 +168,7 @@ jobs:
     runs-on: windows-2019
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: build_x64
         path: .
@@ -222,11 +222,11 @@ jobs:
       - build_arm_executables
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: build_x64
           path: .
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: build_arm
           path: .
