@@ -36,9 +36,9 @@ jobs:
         else
           tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
         fi
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: build_x64
+        name: built_executable_${{ matrix.pkg_target_without_node }}
         path: |
           piping-server-pkg-*.tar.gz
           piping-server-pkg-*.zip
@@ -82,9 +82,9 @@ jobs:
         else
           tar czvf piping-server-pkg-${{ matrix.pkg_target_without_node }}.tar.gz ./piping-server-pkg-${{ matrix.pkg_target_without_node }}
         fi
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: build_arm
+        name: built_executable_${{ matrix.pkg_target_without_node }}
         path: |
           piping-server-pkg-*.tar.gz
           piping-server-pkg-*.zip
@@ -93,9 +93,9 @@ jobs:
     runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: build_x64
+        name: built_executable_linuxstatic-x64
         path: .
     - name: Unarchive tar.gz
       run: tar xvf piping-server-pkg-linuxstatic-x64.tar.gz
@@ -116,9 +116,9 @@ jobs:
     runs-on: ubuntu-20.04
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: build_x64
+        name: built_executable_alpine-x64
         path: .
     - name: Unarchive tar.gz
       run: tar xvf piping-server-pkg-alpine-x64.tar.gz
@@ -145,9 +145,9 @@ jobs:
     runs-on: macos-11
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: build_x64
+        name: built_executable_mac-x64
         path: .
     - name: Unarchive tar.gz
       run: tar xvf piping-server-pkg-mac-x64.tar.gz
@@ -168,9 +168,9 @@ jobs:
     runs-on: windows-2019
     needs: build_x64_executables
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: build_x64
+        name: built_executable_win-x64
         path: .
     - name: Unarchive zip
       run: unzip piping-server-pkg-win-x64.zip
@@ -222,14 +222,11 @@ jobs:
       - build_arm_executables
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: build_x64
+          pattern: built_executable_*
           path: .
-      - uses: actions/download-artifact@v3
-        with:
-          name: build_arm
-          path: .
+          merge-multiple: true
       - run: |
           set -xeu
           mkdir ./publish_dir
